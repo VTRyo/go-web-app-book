@@ -11,7 +11,8 @@ func RequestBodyLogMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		body, err := io.ReadAll(r.body)
 		if err != nil {
-			log.Printf("Failed to log request body", http.StatusBadRequest)
+			log.Printf("Failed to log request body", zap.Error(err))
+			http.Error(w, "Failed to get request body", http.StatusBadRequest)
 			return
 		}
 		defer r.Body.Close()
